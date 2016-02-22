@@ -1,0 +1,5 @@
+package ch.idsia.agents.learning;
+
+public class GeneticAlgorithmAgent {
+
+}

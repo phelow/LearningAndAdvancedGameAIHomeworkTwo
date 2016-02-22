@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;mario&apos;&#x0D;&#x0A;- Original project: &apos;mario&apos;&#x0D;&#x0A;- Original element: &apos;ch.idsia.evolution.ea.GeneticAlgorithmLearning&apos;" description="Delete element" element1="/src&lt;ch.idsia.evolution.ea{GeneticAlgorithmLearning.java" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1456176838055" subPackages="false" version="1.0"/>
+</session>

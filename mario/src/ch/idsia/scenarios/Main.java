@@ -1,13 +1,25 @@
 package ch.idsia.scenarios;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+
 import ch.idsia.agents.Agent;
 import ch.idsia.agents.controllers.ForwardAgent;
 import ch.idsia.agents.controllers.ForwardJumpingAgent;
+import ch.idsia.agents.learning.SimpleMLPAgent;
+import ch.idsia.agents.learning.MediumSRNAgent;
+import ch.idsia.agents.learning.GeneticAlgorithmAgent;
+import ch.idsia.benchmark.mario.engine.GlobalOptions;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.benchmark.mario.environments.MarioEnvironment;
 import ch.idsia.benchmark.tasks.BasicTask;
 import ch.idsia.benchmark.tasks.MarioCustomSystemOfValues;
+import ch.idsia.benchmark.tasks.ProgressTask;
+import ch.idsia.evolution.Evolvable;
+import ch.idsia.evolution.ea.ES;
 import ch.idsia.tools.CmdLineOptions;
+import ch.idsia.utils.Stats;
+import ch.idsia.utils.wox.serial.Easy;
 
 /**
  * Created by IntelliJ IDEA. User: Sergey Karakovskiy, sergey at idsia dot ch Date: Mar 17, 2010 Time: 8:28:00 AM
@@ -15,33 +27,100 @@ import ch.idsia.tools.CmdLineOptions;
  */
 public final class Main
 {
+	final static int generations = 5000;
+	final static int populationSize = 100;
 	public static void main(String[] args)
 	{
-	        //final String argsString = "-vis on -ld 25 -ag ch.idsia.agents.controllers.ScaredShooty";
-	final String argsString = "-vis on -ld 0 -ag ch.idsia.agents.controllers.CompetentAgent";
-	        final CmdLineOptions cmdLineOptions = new CmdLineOptions(argsString);
-	//        final Environment environment = new MarioEnvironment();
-	       final Agent agent = new ForwardJumpingAgent();
-	        final Agent a = cmdLineOptions.getAgent();
-	//        final Agent a = AgentsPool.load("ch.idsia.controllers.agents.controllers.ForwardJumpingAgent");
-	    final BasicTask basicTask = new BasicTask(cmdLineOptions);
+	    CmdLineOptions options = new CmdLineOptions(args);
+//      Evolvable initial = new LargeSRNAgent();
+//      Evolvable initial = new SmallSRNAgent();
+//      Evolvable initial = new MediumSRNAgent();
+      Evolvable initial = new GeneticAlgorithmAgent();
+//  Evolvable initial = new GeneticAlgorithmAgent();
+//      Evolvable initial = new MediumMLPAgent();
+//      if (args.length > 0)
+//      {
+//          initial = (Evolvable) AgentsPool.load (args[0]);
+//      }
+  options.setTimeLimit(30);
+  options.setAgent((Agent) initial);
+  options.setFPS(GlobalOptions.MaxFPS);
+  options.setPauseWorld(false);
+  options.setVisualization(false);
+  ProgressTask task = new ProgressTask(options);
+//      MultiSeedProgressTask task = new MultiSeedProgressTask(options);
+//      MushroomTask task = new MushroomTask(options);
+  options.setLevelRandSeed(6189642);
+//      int seed = (int) (Math.random () * Integer.MAX_VALUE / 100000);
+  int seed = options.getLevelRandSeed();
+  ES es = new ES(task, initial, populationSize);
+  System.out.println("Evolving " + initial + " with task " + task);
+//      int difficulty = 0;
+//      System.out.println("seed = " + seed);
+//      task.uid = seed;
 
-    	int seed = 0;    
+//      options.setLevelRandSeed(seed);
+//      BasicTask bt = new MultiSeedProgressTask(new CmdLineOptions(args));
+//      CmdLineOptions c = new CmdLineOptions(new String[]{"-vis", "on", "-fps", "24"});
 
-        cmdLineOptions.setLevelDifficulty(0);
-	    for (int i = 0; i < 3; ++i)
-	    {
-	           cmdLineOptions.setLevelRandSeed(seed++);
-	           basicTask.reset(cmdLineOptions);
-	           basicTask.runOneEpisode();
-	   	    System.out.println(basicTask.getEnvironment().getEvaluationInfoAsString());
-	    }
-	//            } while (basicTask.getEnvironment().getEvaluationInfo().marioStatus != Environment.MARIO_STATUS_WIN);
-	//        }
-	//
-	    final MarioCustomSystemOfValues sov = new MarioCustomSystemOfValues();
-	    System.out.println(basicTask.getEnvironment().getEvaluationInfo().computeWeightedFitness(sov));
-	    System.exit(0);
+  // start learning in mode 0
+  System.out.println("options.getTimeLimit() = " + options.getTimeLimit());
+//      options.setMarioMode(0);
+  String fileName = "evolved-" + "-uid-" + seed + ".xml";
+  DecimalFormat df = new DecimalFormat();
+  float bestScore = 250;
+
+  options.setLevelDifficulty(0);
+
+  for (int gen = 0; gen < generations; gen++)
+  {
+//          System.out.print("<a = " + options.getMarioMode() + "> ");
+          //task.setStartingSeed(gen);
+      es.nextGeneration();
+
+      float fitn = es.getBestFitnesses()[0];
+      System.out.print("Generation: " + gen + " current best: " + df.format(fitn) + ";  ");
+//          int marioStatus = task.getEnvironment().getEvaluationInfo().marioStatus;
+
+      if (fitn > bestScore /*&& marioStatus == Environment.MARIO_STATUS_WIN*/)
+      {
+          bestScore = fitn;
+          fileName = "evolved-progress-" + options.getAgentFullLoadName() + gen + "-uid-" + seed + ".xml";
+          final Agent a = (Agent) es.getBests()[0];
+//          Easy.save(a, fileName);
+          task.dumpFitnessEvaluation(bestScore, "fitnessImprovements-" + options.getAgentFullLoadName() + ".txt");
+//              c.setLevelRandSeed(options.getLevelRandSeed());
+//              c.setLevelDifficulty(options.getLevelDifficulty());
+//              c.setTimeLimit(options.getTimeLimit());
+          options.setAgent(a);
+          System.out.println("a = " + options.getMarioMode());
+//              task.setAgent(a);
+          options.setVisualization(true);
+          options.setFPS(42);
+          task.getEnvironment().reset(options);
+          
+          task.evaluate(a);
+          options.setVisualization(false);
+          options.setFPS(100);
+
+          System.out.print("MODE: = " + task.getEnvironment().getEvaluationInfo().marioMode);
+          System.out.print("TIME LEFT: " + task.getEnvironment().getEvaluationInfo().timeLeft);
+          System.out.println(", STATUS = " + task.getEnvironment().getEvaluationInfo().marioStatus);
+
+//              difficulty++;
+//              options.setLevelDifficulty(difficulty);
+      }
+  }
+
+  System.out.println("\n\n\n\n\n\n\n\n\n");
+  try
+  {
+      Stats.main(new String[]{fileName, "0"});
+  } catch (IOException e)
+  {
+      e.printStackTrace();
+  }
+  System.exit(0);
 	}
 
 }

@@ -1,0 +1,5 @@
+package ch.idsia.evolution.ea;
+
+public class GeneticAlgorithmLearning extends ES {
+
+}

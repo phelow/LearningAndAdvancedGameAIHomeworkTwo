@@ -168,10 +168,12 @@ public void tick()
     msg = "";
     if (mario.keys != null)
     {
-        for (int i = 0; i < Environment.numberOfButtons; ++i)
+    	for (int i = 0; i < Environment.numberOfButtons && i < mario.keys.length; ++i)
             msg += (mario.keys[i]) ? LevelScene.keysStr[i] : "    ";
+    	
     } else
         msg = "NULL";
+    
     drawString(thisVolatileImageGraphics, msg, 107, 61, 1);
     if (mario.keys[Mario.KEY_SPEED])
         thisVolatileImageGraphics.drawImage(Art.particles[0][3], 234, 59, 10, 10, null);
