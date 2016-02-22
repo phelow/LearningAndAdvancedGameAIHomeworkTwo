@@ -1,6 +1,7 @@
 package ch.idsia.agents.learning;
 
 import ch.idsia.agents.Agent;
+import ch.idsia.agents.controllers.BasicMarioAIAgent;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.evolution.Evolvable;
 import ch.idsia.evolution.MLP;
@@ -11,7 +12,7 @@ import ch.idsia.evolution.MLP;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class SimpleMLPAgent implements Agent, Evolvable
+public class SimpleMLPAgent implements Agent, Evolvable, BasicMarioAIAgent
 {
 
     private MLP mlp;
@@ -134,8 +135,8 @@ public class SimpleMLPAgent implements Agent, Evolvable
 
     private double probe(int x, int y, byte[][] scene)
     {
-        int realX = x + 11;
-        int realY = y + 11;
+        int realX = x + marioCenter[0];
+        int realY = y + marioCenter[1];
         return (scene[realX][realY] != 0) ? 1 : 0;
     }
 }

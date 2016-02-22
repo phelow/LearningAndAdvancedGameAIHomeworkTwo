@@ -1,6 +1,7 @@
 package ch.idsia.agents.learning;
 
 import ch.idsia.agents.Agent;
+import ch.idsia.agents.controllers.BasicMarioAIAgent;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.evolution.Evolvable;
 import ch.idsia.evolution.MLP;
@@ -11,13 +12,13 @@ import ch.idsia.evolution.MLP;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class GeneticAlgorithmAgent implements Agent, Evolvable
+public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, Evolvable
 {
 
     private MLP mlp;
-    private String name = "SimpleMLPAgent";
+    private String name = "GeneticAlgorithmAgent";
     final int numberOfOutputs = 6;
-    final int numberOfInputs = 10;
+    final int numberOfInputs = 361;
     private Environment environment;
 
     /*final*/
@@ -51,11 +52,13 @@ public class GeneticAlgorithmAgent implements Agent, Evolvable
 
     public GeneticAlgorithmAgent()
     {
+    	super("GeneticAlgorithmAgent");
         mlp = new MLP(numberOfInputs, 10, numberOfOutputs);
     }
 
     private GeneticAlgorithmAgent(MLP mlp)
     {
+    	super("GeneticAlgorithmAgent");
         this.mlp = mlp;
     }
 
@@ -111,10 +114,16 @@ public class GeneticAlgorithmAgent implements Agent, Evolvable
 //                              probe(-1, 0, levelScene), probe(0, 0, levelScene), probe(1, 0, levelScene),
 //                                probe(-1, 1, levelScene), probe(0, 1, levelScene), probe(1, 1, levelScene),
 //                                1};
-        double[] inputs = new double[]{probe(-1, -1, mergedObservation), probe(0, -1, mergedObservation), probe(1, -1, mergedObservation),
+        /*double[] inputs = new double[]{probe(-1, -1, mergedObservation), probe(0, -1, mergedObservation), probe(1, -1, mergedObservation),
                 probe(-1, 0, mergedObservation), probe(0, 0, mergedObservation), probe(1, 0, mergedObservation),
                 probe(-1, 1, mergedObservation), probe(0, 1, mergedObservation), probe(1, 1, mergedObservation),
-                1};
+                1};*/
+    	double[] inputs = new double[361];
+    	for(int i = 0; i < mergedObservation.length; i++){
+    		for(int j = 0; j < mergedObservation.length; j++){
+    			inputs[i * mergedObservation.length + j] = mergedObservation[i][j];
+    		}
+    	}
         double[] outputs = mlp.propagate(inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++)
@@ -134,8 +143,19 @@ public class GeneticAlgorithmAgent implements Agent, Evolvable
 
     private double probe(int x, int y, byte[][] scene)
     {
-        int realX = x + 11;
-        int realY = y + 11;
-        return (scene[realX][realY] != 0) ? 1 : 0;
+    	/*
+    	System.out.println("----Mario Scene----");
+    	for(int i = 0; i < scene.length; i++){
+    		String p = "";
+    		for(int j = 0; j < scene.length; j++){
+    			p = p +"[" + i + "," + j + "] : " + scene[i][j];
+    		}
+    		System.out.println(p);
+    	}
+    	System.out.println("--END Mario Scene--");*/
+    	if(x < 0 || y < 0 || x > scene.length || y > scene.length){
+    		return 0;
+    	}
+        return (scene[x][y] != 0) ? 1 : 0;
     }
 }

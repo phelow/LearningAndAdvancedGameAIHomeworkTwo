@@ -28,7 +28,7 @@ import ch.idsia.utils.wox.serial.Easy;
 public final class Main
 {
 	final static int generations = 5000;
-	final static int populationSize = 100;
+	final static int populationSize = 5;
 	public static void main(String[] args)
 	{
 	    CmdLineOptions options = new CmdLineOptions(args);
@@ -42,7 +42,7 @@ public final class Main
 //      {
 //          initial = (Evolvable) AgentsPool.load (args[0]);
 //      }
-  options.setTimeLimit(30);
+  options.setTimeLimit(100);
   options.setAgent((Agent) initial);
   options.setFPS(GlobalOptions.MaxFPS);
   options.setPauseWorld(false);
@@ -68,7 +68,7 @@ public final class Main
 //      options.setMarioMode(0);
   String fileName = "evolved-" + "-uid-" + seed + ".xml";
   DecimalFormat df = new DecimalFormat();
-  float bestScore = 250;
+  float bestScore = 400;
 
   options.setLevelDifficulty(0);
 
@@ -95,7 +95,7 @@ public final class Main
           options.setAgent(a);
           System.out.println("a = " + options.getMarioMode());
 //              task.setAgent(a);
-          options.setVisualization(true);
+          options.setVisualization(false);
           options.setFPS(42);
           task.getEnvironment().reset(options);
           
