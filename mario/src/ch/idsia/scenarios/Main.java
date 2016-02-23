@@ -28,7 +28,7 @@ import ch.idsia.utils.wox.serial.Easy;
 public final class Main
 {
 	final static int generations = 5000;
-	final static int populationSize = 5;
+	final static int populationSize = 100;
 	public static void main(String[] args)
 	{
 	    CmdLineOptions options = new CmdLineOptions(args);

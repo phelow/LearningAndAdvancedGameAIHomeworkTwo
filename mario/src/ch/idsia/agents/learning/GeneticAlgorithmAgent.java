@@ -6,6 +6,7 @@ import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.evolution.Evolvable;
 import ch.idsia.evolution.MLP;
 
+import ch.idsia.evolution.CustomMLP;
 /**
  * Created by IntelliJ IDEA.
  * User: julian
@@ -15,10 +16,11 @@ import ch.idsia.evolution.MLP;
 public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, Evolvable
 {
 
-    private MLP mlp;
+    private CustomMLP customMlp;
     private String name = "GeneticAlgorithmAgent";
     final int numberOfOutputs = 6;
     final int numberOfInputs = 361;
+    final int neuronsPerLevel = 10;
     private Environment environment;
 
     /*final*/
@@ -53,23 +55,25 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     public GeneticAlgorithmAgent()
     {
     	super("GeneticAlgorithmAgent");
-        mlp = new MLP(numberOfInputs, 10, numberOfOutputs);
+    	customMlp = new CustomMLP(numberOfInputs, neuronsPerLevel, numberOfOutputs);
+    	customMlp.mutationMagnitude = .01f;
+    	customMlp.learningRate = .6f;
     }
 
-    private GeneticAlgorithmAgent(MLP mlp)
+    private GeneticAlgorithmAgent(CustomMLP mlp)
     {
     	super("GeneticAlgorithmAgent");
-        this.mlp = mlp;
+        this.customMlp = mlp;
     }
 
     public Evolvable getNewInstance()
     {
-        return new GeneticAlgorithmAgent(mlp.getNewInstance());
+        return new GeneticAlgorithmAgent(customMlp.getNewInstance());
     }
 
     public Evolvable copy()
     {
-        return new GeneticAlgorithmAgent(mlp.copy());
+        return new GeneticAlgorithmAgent(customMlp.copy());
     }
 
     public void integrateObservation(Environment environment)
@@ -103,10 +107,10 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     }
 
     public void reset()
-    { mlp.reset(); }
+    { customMlp.reset(); }
 
     public void mutate()
-    { mlp.mutate(); }
+    { customMlp.mutate(); }
 
     public boolean[] getAction()
     {
@@ -124,7 +128,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     			inputs[i * mergedObservation.length + j] = mergedObservation[i][j];
     		}
     	}
-        double[] outputs = mlp.propagate(inputs);
+        double[] outputs = customMlp.propagate(inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++)
             action[i] = outputs[i] > 0;
