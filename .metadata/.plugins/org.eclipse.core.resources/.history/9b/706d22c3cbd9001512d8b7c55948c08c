@@ -48,7 +48,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         initializeLayer(fourthConnectionLayer);
         initializeLayer(fifthConnectionLayer);
     }
-
+/
     public CustomMLP(double[][] firstConnectionLayer, double[][] secondConnectionLayer, double[][] thirdConnectionLayer, double[][] fourthConnectionLayer, double[][] fifthConnectionLayer, int numberOfHidden,
                int numberOfOutputs)
     {

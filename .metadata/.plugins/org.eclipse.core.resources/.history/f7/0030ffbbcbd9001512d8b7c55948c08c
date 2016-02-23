@@ -48,7 +48,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         initializeLayer(fourthConnectionLayer);
         initializeLayer(fifthConnectionLayer);
     }
-
+/
     public CustomMLP(double[][] firstConnectionLayer, double[][] secondConnectionLayer, double[][] thirdConnectionLayer, double[][] fourthConnectionLayer, double[][] fifthConnectionLayer, int numberOfHidden,
                int numberOfOutputs)
     {
@@ -167,41 +167,11 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
 
         for (int i = 0; i < hiddenNeurons.length; i++)
         {
-            for (int j = 0; j < hiddenNeurons.length; j++)
+            for (int j = 0; j < outputs.length; j++)
             {
                 secondConnectionLayer[i][j] = (double) (secondConnectionLayer[i][j] + ki * (secondConnectionLayer[i][j] - ((double[][]) (last.secondConnectionLayer))[i][j]
                         + phi1 * (((double[][]) (pBest.secondConnectionLayer))[i][j] - secondConnectionLayer[i][j])
                         + phi2 * (((double[][]) (gBest.secondConnectionLayer))[i][j] - secondConnectionLayer[i][j])));
-            }
-        }
-        
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < hiddenNeurons.length; j++)
-            {
-            	thirdConnectionLayer[i][j] = (double) (thirdConnectionLayer[i][j] + ki * (thirdConnectionLayer[i][j] - ((double[][]) (last.thirdConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.thirdConnectionLayer))[i][j] - thirdConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.thirdConnectionLayer))[i][j] - thirdConnectionLayer[i][j])));
-            }
-        }
-        
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < hiddenNeurons.length; j++)
-            {
-            	fourthConnectionLayer[i][j] = (double) (fourthConnectionLayer[i][j] + ki * (fourthConnectionLayer[i][j] - ((double[][]) (last.fourthConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.fourthConnectionLayer))[i][j] - fourthConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.fourthConnectionLayer))[i][j] - fourthConnectionLayer[i][j])));
-            }
-        }
-        
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < outputs.length; j++)
-            {
-                secondConnectionLayer[i][j] = (double) (fifthConnectionLayer[i][j] + ki * (fifthConnectionLayer[i][j] - ((double[][]) (last.fifthConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.fifthConnectionLayer))[i][j] - fifthConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.fifthConnectionLayer))[i][j] - fifthConnectionLayer[i][j])));
             }
         }
 
