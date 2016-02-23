@@ -51,7 +51,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     // for information see documentation for the benchmark <link: marioai.org/marioaibenchmark/zLevels
     int zLevelScene = 1;
     int zLevelEnemies = 0;
-    private boolean firstFrame = true;
+
 
     public GeneticAlgorithmAgent()
     {
@@ -89,7 +89,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
 	        	for(int j = 0; j < mergedObservation.length; j++){
 	        		if(prevEnemies[i][j] != 0 && mergedObservation[i][j] == 0){
 	        			mergedObservation[i][j] = (byte) (prevEnemies[i][j] + 300);  
-	        			firstFrame = false;
+	        			
 	        		}
 	        	}
 	        }

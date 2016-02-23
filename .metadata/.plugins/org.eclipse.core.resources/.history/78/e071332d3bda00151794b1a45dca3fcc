@@ -27,7 +27,6 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     protected byte[][] levelScene;
     /*final */
     protected byte[][] enemies;
-    protected byte[][] prevEnemies;
     protected byte[][] mergedObservation;
 
     protected float[] marioFloatPos = null;
@@ -51,14 +50,13 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     // for information see documentation for the benchmark <link: marioai.org/marioaibenchmark/zLevels
     int zLevelScene = 1;
     int zLevelEnemies = 0;
-    private boolean firstFrame = true;
+
 
     public GeneticAlgorithmAgent()
     {
     	super("GeneticAlgorithmAgent");
     	customMlp = new CustomMLP(numberOfInputs, neuronsPerLevel, numberOfOutputs);
     	customMlp.mutationMagnitude = .1f;
-    	
     	customMlp.learningRate = .2f;
     }
 
@@ -84,15 +82,14 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
         levelScene = environment.getLevelSceneObservationZ(zLevelScene);
         enemies = environment.getEnemiesObservationZ(zLevelEnemies);
         mergedObservation = environment.getMergedObservationZZ(1, 0);
-        if(firstFrame == false){
-	        for(int i = 0; i < mergedObservation.length; i++){
-	        	for(int j = 0; j < mergedObservation.length; j++){
-	        		if(prevEnemies[i][j] != 0 && mergedObservation[i][j] == 0){
-	        			mergedObservation[i][j] = (byte) (prevEnemies[i][j] + 300);  
-	        			firstFrame = false;
-	        		}
-	        	}
-	        }
+        
+        for(int i = 0; i < mergedObservation.length; i++){
+        	for(int j = 0; j < mergedObservation.length; j++){
+        		if(prevEnemies[i][j] != 0 && mergedObservation[i][j] == 0){
+        			mergedObservation[i][j] = (prevEnemies[i][j] + 300;  
+        			
+        		}
+        	}
         }
 
         this.marioFloatPos = environment.getMarioFloatPos();
@@ -111,8 +108,6 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
         getKillsByFire = marioState[7];
         getKillsByStomp = marioState[8];
         getKillsByShell = marioState[9];
-        
-        prevEnemies = enemies;
         
         
     }
