@@ -1,5 +1,0 @@
-package ch.idsia.evolution;
-
-public class CustomMLP extends MLP {
-
-}

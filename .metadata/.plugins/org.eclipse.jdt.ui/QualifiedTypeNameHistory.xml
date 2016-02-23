@@ -4,4 +4,9 @@
 <fullyQualifiedTypeName name="ch.idsia.agents.Agent"/>
 <fullyQualifiedTypeName name="ch.idsia.benchmark.mario.engine.sprites.Mario"/>
 <fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.util.Random"/>
+<fullyQualifiedTypeName name="ch.idsia.evolution.CustomMLP"/>
+<fullyQualifiedTypeName name="ch.idsia.agents.LearningAgent"/>
+<fullyQualifiedTypeName name="ch.idsia.agents.learning.GeneticAlgorithmAgent"/>
 </qualifiedTypeNameHistroy>

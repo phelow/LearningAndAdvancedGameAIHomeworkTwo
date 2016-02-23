@@ -19,10 +19,12 @@ public class CustomES implements EA
     private final float[] fitness;
     private final int elite;
     private final Task task;
-    private final int evaluationRepetitions = 1;
+    private final int evaluationRepetitions = 5;
 
-    private final int parent = 50;
-    private final int child = 50;
+    private final int parent = 20;
+    private final int child = 40;
+    private final int untouched = 30;
+    private final int mutated = 10;
     
     java.util.Random Random = new java.util.Random();
     
@@ -34,7 +36,7 @@ public class CustomES implements EA
             population[i] = (GeneticAlgorithmAgent) initial.getNewInstance();
         }
         this.fitness = new float[populationSize];
-        this.elite = populationSize / 2;
+        this.elite = populationSize / 10;
         this.task = task;
     }
 
@@ -46,14 +48,33 @@ public class CustomES implements EA
         }
 
         sortPopulationByFitness();
+        //Use the top 20% to replace the bottom 50% with children
+        //Mutate the 50-60% 
+        //Don't touch the 60%-100%
+        for(int i = parent + untouched; i < parent + untouched + mutated; i++){
+        	
+        	population[i].mutate();
+        	evaluate(i);
+        }
+        
+
+        for(int i = parent + untouched + mutated; i < parent + untouched + mutated + child; i++){
+        	population[i].customMlp.psoRecombine(population[Random.nextInt(parent)].customMlp, population[Random.nextInt(parent)].customMlp, population[Random.nextInt(parent)].customMlp);
+            
+        	population[i].mutate();
+        	evaluate(i);
+        }
+        
+        /*
         for (int i = elite; i < population.length; i++)
         {
         	GeneticAlgorithmAgent newAgent = (GeneticAlgorithmAgent) population[i - elite].copy();
             population[i].customMlp.psoRecombine(population[Random.nextInt(elite)].customMlp, population[Random.nextInt(elite)].customMlp, population[Random.nextInt(elite)].customMlp);
             population[i].mutate();
             evaluate(i);
-        }
         
+        }
+        */
         
         shuffle();
         sortPopulationByFitness();
