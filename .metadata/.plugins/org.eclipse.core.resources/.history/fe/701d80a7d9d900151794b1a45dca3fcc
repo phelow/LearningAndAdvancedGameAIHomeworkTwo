@@ -19,7 +19,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     private CustomMLP customMlp;
     private String name = "GeneticAlgorithmAgent";
     final int numberOfOutputs = 6;
-    final int numberOfInputs = 368;
+    final int numberOfInputs = 361;
     final int neuronsPerLevel = 50;
     private Environment environment;
 

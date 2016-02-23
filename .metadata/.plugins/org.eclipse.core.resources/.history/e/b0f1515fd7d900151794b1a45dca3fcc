@@ -27,6 +27,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
     public static double mean = 0.0f;        // initialization mean
     public static double deviation = 0.1f;   // initialization deviation
     
+    public static final int numberOfLayers = 3;
     public static final Random random = new Random();
     public double learningRate = 0.1;
     public int numHidden;

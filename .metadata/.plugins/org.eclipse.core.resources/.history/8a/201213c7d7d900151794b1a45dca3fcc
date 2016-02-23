@@ -19,8 +19,8 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     private CustomMLP customMlp;
     private String name = "GeneticAlgorithmAgent";
     final int numberOfOutputs = 6;
-    final int numberOfInputs = 368;
-    final int neuronsPerLevel = 50;
+    final int numberOfInputs = 361;
+    final int neuronsPerLevel = 300;
     private Environment environment;
 
     /*final*/
@@ -122,35 +122,12 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
                 probe(-1, 0, mergedObservation), probe(0, 0, mergedObservation), probe(1, 0, mergedObservation),
                 probe(-1, 1, mergedObservation), probe(0, 1, mergedObservation), probe(1, 1, mergedObservation),
                 1};*/
-    	double[] inputs = new double[368];
+    	double[] inputs = new double[361];
     	for(int i = 0; i < mergedObservation.length; i++){
     		for(int j = 0; j < mergedObservation.length; j++){
     			inputs[i * mergedObservation.length + j] = mergedObservation[i][j];
     		}
     	}
-    	
-    	inputs[361] = marioStatus;
-    	inputs[362] = marioMode;
-    	inputs[363] =  isMarioOnGround ? 1.0 : 0.0;
-    	inputs[364] = isMarioAbleToJump ? 1.0 : 0.0;
-    	inputs[365] = isMarioAbleToShoot? 1.0 : 0.0;
-    	inputs[366] = isMarioCarrying? 1.0 : 0.0;
-    	inputs[367] = 1.0;
-    	
-    	/*
-    	 * 
-        this.marioState = environment.getMarioState();
-        marioStatus = marioState[0];
-        marioMode = marioState[1];
-
-        isMarioOnGround = marioState[2] == 1;
-        isMarioAbleToJump = marioState[3] == 1;
-        isMarioAbleToShoot = marioState[4] == 1;
-        isMarioCarrying = marioState[5] == 1;
-        
-    	 * 
-    	 */
-    	
         double[] outputs = customMlp.propagate(inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++)
@@ -168,7 +145,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
         this.name = name;
     }
 
-    private int probe(int x, int y, byte[][] scene)
+    private double probe(int x, int y, byte[][] scene)
     {
     	/*
     	System.out.println("----Mario Scene----");
@@ -183,6 +160,6 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     	if(x < 0 || y < 0 || x > scene.length || y > scene.length){
     		return 0;
     	}
-        return scene[x][y];
+        return (scene[x][y] != 0) ? 1 : 0;
     }
 }

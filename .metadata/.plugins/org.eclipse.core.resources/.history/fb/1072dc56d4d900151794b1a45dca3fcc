@@ -27,15 +27,15 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
     public static double mean = 0.0f;        // initialization mean
     public static double deviation = 0.1f;   // initialization deviation
     
+    public static final int numberOfLayers = 3;
     public static final Random random = new Random();
-    public double learningRate = 0.1;
+    public double learningRate = 0.01;
     public int numHidden;
 
     public CustomMLP(int numberOfInputs, int numberOfHidden, int numberOfOutputs)
     {
     	numHidden = numberOfHidden;
         firstConnectionLayer = new double[numberOfInputs][numberOfHidden];
-        recessiveGenesLayer = new double[numberOfInputs][numberOfHidden];
         lastConnectionLayer = new double[numberOfHidden][numberOfOutputs];
         hiddenNeurons = new double[numberOfHidden];
         outputs = new double[numberOfOutputs];
@@ -46,11 +46,11 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         initializeLayer(lastConnectionLayer);
     }
 
-    public CustomMLP(double[][] firstConnectionLayer, double[][] recessiveGenesLayer, double[][] fifthConnectionLayer, int numberOfHidden,
+    public CustomMLP(double[][] firstConnectionLayer, double[][] fifthConnectionLayer, int numberOfHidden,
                int numberOfOutputs)
     {
         this.firstConnectionLayer = firstConnectionLayer;
-        this.recessiveGenesLayer = recessiveGenesLayer;
+        
         this.lastConnectionLayer = fifthConnectionLayer;
         inputs = new double[firstConnectionLayer.length];
         hiddenNeurons = new double[numberOfHidden];
@@ -75,7 +75,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
 
     public CustomMLP copy()
     {
-    	CustomMLP copy = new CustomMLP(copy(firstConnectionLayer), copy(recessiveGenesLayer),copy(lastConnectionLayer),
+    	CustomMLP copy = new CustomMLP(copy(firstConnectionLayer),copy(lastConnectionLayer),
                 hiddenNeurons.length, outputs.length);
         copy.setMutationMagnitude(mutationMagnitude);
         return copy;
@@ -95,7 +95,6 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
     {
     	int mutationType = random.nextInt(100);
         mutate(firstConnectionLayer,mutationType);
-        mutate(recessiveGenesLayer,mutationType);
         mutate(lastConnectionLayer,mutationType);
     }
 
@@ -140,11 +139,9 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         // Those numbers are supposed to be constants. Ask Maurice Clerc.
         final double ki = 0.729844;
         final double phi = 2.05;
-        final double psi = .1f;
 
         double phi1 = phi * random.nextDouble();
         double phi2 = phi * random.nextDouble();
-        double phi3 = psi * random.nextDouble();
         //System.out.println("phi1: "+phi1+" phi2: "+phi2);
         //System.out.println(" LAST:" + last);
         //System.out.println(" PBEST:" + pBest);
@@ -155,19 +152,8 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
             for (int j = 0; j < hiddenNeurons.length; j++)
             {
                 firstConnectionLayer[i][j] = (double) (firstConnectionLayer[i][j] + ki * (firstConnectionLayer[i][j] - ((double[][]) (last.firstConnectionLayer))[i][j]
-                        + (phi3) * (((double[][])(pBest.recessiveGenesLayer))[i][j] - recessiveGenesLayer[i][j])
-                		+ (phi1- phi3/2.0) * (((double[][]) (pBest.firstConnectionLayer))[i][j] - firstConnectionLayer[i][j])
-                        + (phi2 - phi3/2.0) * (((double[][]) (gBest.firstConnectionLayer))[i][j] - firstConnectionLayer[i][j])));
-            }
-        }
-        
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < outputs.length; j++)
-            {
-            	recessiveGenesLayer[i][j] = (double) (recessiveGenesLayer[i][j] + ki * (recessiveGenesLayer[i][j] - ((double[][]) (last.recessiveGenesLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.recessiveGenesLayer))[i][j] - recessiveGenesLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.recessiveGenesLayer))[i][j] - recessiveGenesLayer[i][j])));
+                        + phi1 * (((double[][]) (pBest.firstConnectionLayer))[i][j] - firstConnectionLayer[i][j])
+                        + phi2 * (((double[][]) (gBest.firstConnectionLayer))[i][j] - firstConnectionLayer[i][j])));
             }
         }
         
@@ -176,9 +162,8 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
             for (int j = 0; j < outputs.length; j++)
             {
                 lastConnectionLayer[i][j] = (double) (lastConnectionLayer[i][j] + ki * (lastConnectionLayer[i][j] - ((double[][]) (last.lastConnectionLayer))[i][j]
-                		+ (phi3) * (((double[][])(pBest.recessiveGenesLayer))[i][j] - recessiveGenesLayer[i][j])
-                		+ (phi1- phi3/2.0) * (((double[][]) (pBest.lastConnectionLayer))[i][j] - lastConnectionLayer[i][j])
-                        + (phi2 - phi3/2.0) * (((double[][]) (gBest.lastConnectionLayer))[i][j] - lastConnectionLayer[i][j])));
+                        + phi1 * (((double[][]) (pBest.lastConnectionLayer))[i][j] - lastConnectionLayer[i][j])
+                        + phi2 * (((double[][]) (gBest.lastConnectionLayer))[i][j] - lastConnectionLayer[i][j])));
             }
         }
 
