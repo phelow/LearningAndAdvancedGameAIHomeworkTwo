@@ -16,13 +16,15 @@ import ch.idsia.evolution.CustomMLP;
 public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, Evolvable
 {
 
-    private CustomMLP customMlp;
+    public CustomMLP customMlp;
     private String name = "GeneticAlgorithmAgent";
     final int numberOfOutputs = 6;
-    final int numberOfInputs = 369;
+    final int numberOfInputs = 377;
     final int neuronsPerLevel = 60;
     private Environment environment;
 
+    double[] outputs;
+    
     /*final*/
     protected byte[][] levelScene;
     /*final */
@@ -31,6 +33,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     protected byte[][] mergedObservation;
 
     protected float[] marioFloatPos = null;
+    protected float[] marioPrevFloatPos = null;
     protected float[] enemiesFloatPos = null;
 
     protected int[] marioState = null;
@@ -80,6 +83,10 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
 
     public void integrateObservation(Environment environment)
     {
+    	if(this.firstFrame == false){
+    		marioPrevFloatPos = marioFloatPos;
+    	}
+    	
         this.environment = environment;
         levelScene = environment.getLevelSceneObservationZ(zLevelScene);
         enemies = environment.getEnemiesObservationZ(zLevelEnemies);
@@ -88,8 +95,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
 	        for(int i = 0; i < mergedObservation.length; i++){
 	        	for(int j = 0; j < mergedObservation.length; j++){
 	        		if(prevEnemies[i][j] != 0 && mergedObservation[i][j] == 0){
-	        			mergedObservation[i][j] = (byte) (prevEnemies[i][j] + 300);  
-	        			firstFrame = false;
+	        			mergedObservation[i][j] = (byte) (prevEnemies[i][j] + 300);
 	        		}
 	        	}
 	        }
@@ -127,7 +133,18 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
 
     public void mutate()
     { customMlp.mutate(); }
+    
+//---- start rules based mario functions
+		
+	public float GetMarioSpeed(){
+		return this.marioFloatPos[0] - this.marioPrevFloatPos[0];
+	}
+	//--- end rules based mario functions
+    
 
+	public float GetMarioVerticalSpeed(){
+		return this.marioFloatPos[1] - this.marioPrevFloatPos[1];
+	}
     public boolean[] getAction()
     {
 //        double[] inputs = new double[]{probe(-1, -1, levelScene), probe(0, -1, levelScene), probe(1, -1, levelScene),
@@ -153,7 +170,20 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     	inputs[366] = isMarioCarrying? 1.0 : 0.0;
     	inputs[367] = this.marioFloatPos[0];
     	inputs[368] = this.marioFloatPos[1];
-    	
+    	if(firstFrame == false){
+    		inputs[369] = outputs[0];
+    		inputs[370] = outputs[1];
+    		inputs[371] = outputs[2];
+    		inputs[372] = outputs[3];
+    		inputs[373] = outputs[4];
+    		inputs[374] = outputs[5];
+    		inputs[375] = GetMarioSpeed();
+    		inputs[376] = GetMarioVerticalSpeed();
+    	}
+    	else{
+
+    		firstFrame = false;
+    	}
     	/*
     	 * 
         this.marioState = environment.getMarioState();
@@ -168,7 +198,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
     	 * 
     	 */
     	
-        double[] outputs = customMlp.propagate(inputs);
+        outputs = customMlp.propagate(inputs);
         customMlp.backPropagate(outputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++)
