@@ -17,7 +17,6 @@ import ch.idsia.benchmark.tasks.MarioCustomSystemOfValues;
 import ch.idsia.benchmark.tasks.ProgressTask;
 import ch.idsia.evolution.Evolvable;
 import ch.idsia.evolution.ea.ES;
-import ch.idsia.evolution.ea.CustomES;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.utils.Stats;
 import ch.idsia.utils.wox.serial.Easy;
@@ -55,7 +54,7 @@ public final class Main
   options.setLevelRandSeed(seed);
 //      int seed = (int) (Math.random () * Integer.MAX_VALUE / 100000);
  // int seed = options.getLevelRandSeed();
- CustomES es = new CustomES(task, initial, populationSize);
+  ES es = new ES(task, initial, populationSize);
   System.out.println("Evolving " + initial + " with task " + task);
 //      int difficulty = 0;
 //      System.out.println("seed = " + seed);

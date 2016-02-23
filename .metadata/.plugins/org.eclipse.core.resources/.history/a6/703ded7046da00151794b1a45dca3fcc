@@ -55,7 +55,7 @@ public final class Main
   options.setLevelRandSeed(seed);
 //      int seed = (int) (Math.random () * Integer.MAX_VALUE / 100000);
  // int seed = options.getLevelRandSeed();
- CustomES es = new CustomES(task, initial, populationSize);
+ CustomES es = new ES(task, initial, populationSize);
   System.out.println("Evolving " + initial + " with task " + task);
 //      int difficulty = 0;
 //      System.out.println("seed = " + seed);
