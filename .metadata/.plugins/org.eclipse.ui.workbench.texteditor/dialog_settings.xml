@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="ObstacleAhead" key="selection"/>
+		<item value="mutate" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="mutate"/>
+			<item value="Mlp"/>
+			<item value="mutation"/>
 			<item value="ObstacleAhead"/>
 			<item value="dangerOfGap"/>
 			<item value="enemyBehind"/>
 			<item value="marioSpeed"/>
 			<item value="GetMarioSpeed"/>
-			<item value="EnemiesAbove"/>
-			<item value="DangerOfEnemyAbove"/>
-			<item value="f"/>
 		</list>
 		<list key="replacehistory">
 			<item value="ConservativeShootingAgent"/>
