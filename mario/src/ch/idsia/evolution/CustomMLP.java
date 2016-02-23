@@ -1,5 +1,6 @@
 package ch.idsia.evolution;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -8,14 +9,12 @@ import java.util.Random;
  * Date: Apr 28, 2009
  * Time: 2:15:10 PM
  */
+
 public class CustomMLP implements FA<double[], double[]>, Evolvable
 {
-
+	
     private double[][] firstConnectionLayer;
-    private double[][] secondConnectionLayer;
-    private double[][] thirdConnectionLayer;
-    private double[][] fourthConnectionLayer;
-    private double[][] fifthConnectionLayer;
+    private double[][] lastConnectionLayer;
     private double[] hiddenNeurons;
     private double[] outputs;
     private double[] inputs;
@@ -26,37 +25,32 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
 
     public static double mean = 0.0f;        // initialization mean
     public static double deviation = 0.1f;   // initialization deviation
-
+    
+    public static final int numberOfLayers = 3;
     public static final Random random = new Random();
     public double learningRate = 0.01;
+    public int numHidden;
 
     public CustomMLP(int numberOfInputs, int numberOfHidden, int numberOfOutputs)
     {
-
+    	numHidden = numberOfHidden;
         firstConnectionLayer = new double[numberOfInputs][numberOfHidden];
-        secondConnectionLayer = new double[numberOfHidden][numberOfHidden];
-        thirdConnectionLayer = new double[numberOfHidden][numberOfHidden];
-        fourthConnectionLayer = new double[numberOfHidden][numberOfHidden];
-        fifthConnectionLayer = new double[numberOfHidden][numberOfOutputs];
+        lastConnectionLayer = new double[numberOfHidden][numberOfOutputs];
         hiddenNeurons = new double[numberOfHidden];
         outputs = new double[numberOfOutputs];
         //targetOutputs = new double[numberOfOutputs];
         inputs = new double[numberOfInputs];
         initializeLayer(firstConnectionLayer);
-        initializeLayer(secondConnectionLayer);
-        initializeLayer(thirdConnectionLayer);
-        initializeLayer(fourthConnectionLayer);
-        initializeLayer(fifthConnectionLayer);
+        
+        initializeLayer(lastConnectionLayer);
     }
 
-    public CustomMLP(double[][] firstConnectionLayer, double[][] secondConnectionLayer, double[][] thirdConnectionLayer, double[][] fourthConnectionLayer, double[][] fifthConnectionLayer, int numberOfHidden,
+    public CustomMLP(double[][] firstConnectionLayer, double[][] fifthConnectionLayer, int numberOfHidden,
                int numberOfOutputs)
     {
         this.firstConnectionLayer = firstConnectionLayer;
-        this.secondConnectionLayer = secondConnectionLayer;
-        this.thirdConnectionLayer = thirdConnectionLayer;
-        this.fourthConnectionLayer = fourthConnectionLayer;
-        this.fifthConnectionLayer = fifthConnectionLayer;
+        
+        this.lastConnectionLayer = fifthConnectionLayer;
         inputs = new double[firstConnectionLayer.length];
         hiddenNeurons = new double[numberOfHidden];
         outputs = new double[numberOfOutputs];
@@ -75,12 +69,12 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
 
     public CustomMLP getNewInstance()
     {
-        return new CustomMLP(firstConnectionLayer.length, secondConnectionLayer.length, outputs.length);
+        return new CustomMLP(firstConnectionLayer.length, numHidden, outputs.length);
     }
 
     public CustomMLP copy()
     {
-    	CustomMLP copy = new CustomMLP(copy(firstConnectionLayer), copy(secondConnectionLayer),copy(thirdConnectionLayer),copy(fourthConnectionLayer),copy(fifthConnectionLayer),
+    	CustomMLP copy = new CustomMLP(copy(firstConnectionLayer),copy(lastConnectionLayer),
                 hiddenNeurons.length, outputs.length);
         copy.setMutationMagnitude(mutationMagnitude);
         return copy;
@@ -100,10 +94,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
     {
     	int mutationType = random.nextInt(100);
         mutate(firstConnectionLayer,mutationType);
-        mutate(secondConnectionLayer,mutationType);
-        mutate(thirdConnectionLayer,mutationType);
-        mutate(fourthConnectionLayer,mutationType);
-        mutate(fifthConnectionLayer,mutationType);
+        mutate(lastConnectionLayer,mutationType);
     }
 
     private void mutate(double[] array, int mutationType)
@@ -164,44 +155,14 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
                         + phi2 * (((double[][]) (gBest.firstConnectionLayer))[i][j] - firstConnectionLayer[i][j])));
             }
         }
-
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < hiddenNeurons.length; j++)
-            {
-                secondConnectionLayer[i][j] = (double) (secondConnectionLayer[i][j] + ki * (secondConnectionLayer[i][j] - ((double[][]) (last.secondConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.secondConnectionLayer))[i][j] - secondConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.secondConnectionLayer))[i][j] - secondConnectionLayer[i][j])));
-            }
-        }
-        
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < hiddenNeurons.length; j++)
-            {
-            	thirdConnectionLayer[i][j] = (double) (thirdConnectionLayer[i][j] + ki * (thirdConnectionLayer[i][j] - ((double[][]) (last.thirdConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.thirdConnectionLayer))[i][j] - thirdConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.thirdConnectionLayer))[i][j] - thirdConnectionLayer[i][j])));
-            }
-        }
-        
-        for (int i = 0; i < hiddenNeurons.length; i++)
-        {
-            for (int j = 0; j < hiddenNeurons.length; j++)
-            {
-            	fourthConnectionLayer[i][j] = (double) (fourthConnectionLayer[i][j] + ki * (fourthConnectionLayer[i][j] - ((double[][]) (last.fourthConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.fourthConnectionLayer))[i][j] - fourthConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.fourthConnectionLayer))[i][j] - fourthConnectionLayer[i][j])));
-            }
-        }
         
         for (int i = 0; i < hiddenNeurons.length; i++)
         {
             for (int j = 0; j < outputs.length; j++)
             {
-                secondConnectionLayer[i][j] = (double) (fifthConnectionLayer[i][j] + ki * (fifthConnectionLayer[i][j] - ((double[][]) (last.fifthConnectionLayer))[i][j]
-                        + phi1 * (((double[][]) (pBest.fifthConnectionLayer))[i][j] - fifthConnectionLayer[i][j])
-                        + phi2 * (((double[][]) (gBest.fifthConnectionLayer))[i][j] - fifthConnectionLayer[i][j])));
+                lastConnectionLayer[i][j] = (double) (lastConnectionLayer[i][j] + ki * (lastConnectionLayer[i][j] - ((double[][]) (last.lastConnectionLayer))[i][j]
+                        + phi1 * (((double[][]) (pBest.lastConnectionLayer))[i][j] - lastConnectionLayer[i][j])
+                        + phi2 * (((double[][]) (gBest.lastConnectionLayer))[i][j] - lastConnectionLayer[i][j])));
             }
         }
 
@@ -234,7 +195,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
             System.out.println("MLP: NOTE: only " + inputIn.length + " inputs out of " + inputs.length + " are used in the network");
         propagateOneStep(inputs, hiddenNeurons, firstConnectionLayer);
         tanh(hiddenNeurons);
-        propagateOneStep(hiddenNeurons, outputs, secondConnectionLayer);
+        propagateOneStep(hiddenNeurons, outputs, lastConnectionLayer);
         tanh(outputs);
 
         return outputs;
@@ -284,7 +245,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
             for (int toOutput = 0; toOutput < outputs.length; toOutput++)
             {
                 // System.out.println("Hidden " + hidden + ", toOutput" + toOutput);
-                contributionToOutputError += secondConnectionLayer[hidden][toOutput] * outputError[toOutput];
+                contributionToOutputError += lastConnectionLayer[hidden][toOutput] * outputError[toOutput];
                 // System.out.println("Err tempSum: " + contributionToOutputError +  "=" +secondConnectionLayer[hidden][toOutput]  +  "*" +outputError[toOutput] );
             }
             hiddenError[hidden] = dtanh(hiddenNeurons[hidden]) * contributionToOutputError;
@@ -318,13 +279,13 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
             for (int output = 0; output < outputs.length; output++)
             {
 
-                double saveAway = secondConnectionLayer[hidden][output];
-                secondConnectionLayer[hidden][output] += learningRate * outputError[output] * hiddenNeurons[hidden];
+                double saveAway = lastConnectionLayer[hidden][output];
+                lastConnectionLayer[hidden][output] += learningRate * outputError[output] * hiddenNeurons[hidden];
 
-                if (Double.isNaN(secondConnectionLayer[hidden][output]))
+                if (Double.isNaN(lastConnectionLayer[hidden][output]))
                 {
                     System.out.println("target: " + targetOutputs[output] + " outputs: " + outputs[output] + " error:" + outputError[output] + "\n" +
-                            "hidden: " + hiddenNeurons[hidden] + "\nnew conn weight: " + secondConnectionLayer[hidden][output] + " was: " + saveAway + "\n");
+                            "hidden: " + hiddenNeurons[hidden] + "\nnew conn weight: " + lastConnectionLayer[hidden][output] + " was: " + saveAway + "\n");
                 }
             }
         }
@@ -376,7 +337,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
                 sum += anAFirstConnectionLayer;
             }
         }
-        for (double[] aSecondConnectionLayer : secondConnectionLayer)
+        for (double[] aSecondConnectionLayer : lastConnectionLayer)
         {
             for (double anASecondConnectionLayer : aSecondConnectionLayer)
             {
@@ -419,7 +380,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         }
         System.out.print("----------------------------------------------------" +
                 "-----------------------------------\n");
-        for (double[] aSecondConnectionLayer : secondConnectionLayer)
+        for (double[] aSecondConnectionLayer : lastConnectionLayer)
         {
             System.out.print("|");
             for (double anASecondConnectionLayer : aSecondConnectionLayer)
@@ -435,7 +396,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
     public String toString()
     {
         int numberOfConnections = (firstConnectionLayer.length * firstConnectionLayer[0].length) +
-                (secondConnectionLayer.length * secondConnectionLayer[0].length);
+                (lastConnectionLayer.length * lastConnectionLayer[0].length);
         return "Straight mlp, mean connection weight " + (sum() / numberOfConnections);
     }
 
@@ -468,7 +429,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         {
             for (int j = 0; j < outputs.length; j++)
             {
-                weights[k] = secondConnectionLayer[i][j];
+                weights[k] = lastConnectionLayer[i][j];
                 k++;
             }
         }
@@ -491,7 +452,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
         {
             for (int j = 0; j < outputs.length; j++)
             {
-                secondConnectionLayer[i][j] = weights[k];
+            	lastConnectionLayer[i][j] = weights[k];
                 k++;
             }
         }
@@ -505,7 +466,7 @@ public class CustomMLP implements FA<double[], double[]>, Evolvable
     public void randomise()
     {
         randomise(firstConnectionLayer);
-        randomise(secondConnectionLayer);
+        randomise(lastConnectionLayer);
     }
 
     protected void randomise(double[][] layer)
