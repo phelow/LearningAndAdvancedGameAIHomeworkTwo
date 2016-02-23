@@ -77,14 +77,10 @@ public final class Main
   {
 	  seed--;
 	  dif--;
-	  if(dif < 0){
-		  dif = 9;
-	  }
 	  if(seed < 0){
 		  seed = 1000;
 		  
 	  }
-	  options.setLevelDifficulty(dif);
 	  options.setLevelRandSeed(seed);
 //          System.out.print("<a = " + options.getMarioMode() + "> ");
           //task.setStartingSeed(gen);

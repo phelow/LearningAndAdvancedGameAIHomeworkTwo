@@ -50,10 +50,9 @@ public final class Main
   ProgressTask task = new ProgressTask(options);
 //      MultiSeedProgressTask task = new MultiSeedProgressTask(options);
 //      MushroomTask task = new MushroomTask(options);
-  int seed = 6189642;
-  options.setLevelRandSeed(seed);
+  options.setLevelRandSeed(6189642);
 //      int seed = (int) (Math.random () * Integer.MAX_VALUE / 100000);
- // int seed = options.getLevelRandSeed();
+  int seed = options.getLevelRandSeed();
   ES es = new ES(task, initial, populationSize);
   System.out.println("Evolving " + initial + " with task " + task);
 //      int difficulty = 0;
@@ -71,21 +70,10 @@ public final class Main
   DecimalFormat df = new DecimalFormat();
   float bestScore = 600;
 
-  int dif = 0;
+  options.setLevelDifficulty(0);
 
   for (int gen = 0; gen < generations; gen++)
   {
-	  seed--;
-	  dif--;
-	  if(dif < 0){
-		  dif = 9;
-	  }
-	  if(seed < 0){
-		  seed = 1000;
-		  
-	  }
-	  options.setLevelDifficulty(dif);
-	  options.setLevelRandSeed(seed);
 //          System.out.print("<a = " + options.getMarioMode() + "> ");
           //task.setStartingSeed(gen);
       es.nextGeneration();
@@ -107,7 +95,7 @@ public final class Main
           options.setAgent(a);
           System.out.println("a = " + options.getMarioMode());
 //              task.setAgent(a);
-          options.setVisualization(true);
+          options.setVisualization(false);
           options.setFPS(42);
           task.getEnvironment().reset(options);
           

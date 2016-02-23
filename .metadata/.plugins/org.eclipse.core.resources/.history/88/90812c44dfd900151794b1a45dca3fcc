@@ -122,7 +122,7 @@ public class GeneticAlgorithmAgent extends BasicMarioAIAgent implements Agent, E
                 probe(-1, 0, mergedObservation), probe(0, 0, mergedObservation), probe(1, 0, mergedObservation),
                 probe(-1, 1, mergedObservation), probe(0, 1, mergedObservation), probe(1, 1, mergedObservation),
                 1};*/
-    	double[] inputs = new double[numberOfInputs];
+    	double[] inputs = new double[368];
     	for(int i = 0; i < mergedObservation.length; i++){
     		for(int j = 0; j < mergedObservation.length; j++){
     			inputs[i * mergedObservation.length + j] = mergedObservation[i][j];

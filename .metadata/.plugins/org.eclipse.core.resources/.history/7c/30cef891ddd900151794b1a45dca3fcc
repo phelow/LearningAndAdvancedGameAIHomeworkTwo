@@ -84,7 +84,6 @@ public final class Main
 		  seed = 1000;
 		  
 	  }
-	  options.setLevelDifficulty(dif);
 	  options.setLevelRandSeed(seed);
 //          System.out.print("<a = " + options.getMarioMode() + "> ");
           //task.setStartingSeed(gen);
