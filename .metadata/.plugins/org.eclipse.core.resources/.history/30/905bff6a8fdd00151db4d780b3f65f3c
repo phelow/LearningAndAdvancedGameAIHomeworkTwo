@@ -98,7 +98,7 @@ public final class Main
 
       float fitn = es.getBestFitnesses()[0];// Appending data to text file
 
-      String path = "E:\\Development\\SchoolWork Spring 2016\\Learning and Advanced Game AI\\MarioTesting\\GeneticAlgorithmTest.txt";
+      String path = "C:/Users/Olivia/Documents/Learning and AI/test.txt";
 
       File file = new File(path);
 
