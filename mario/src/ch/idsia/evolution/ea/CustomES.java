@@ -19,12 +19,16 @@ public class CustomES implements EA
     private final float[] fitness;
     private final int elite;
     private final Task task;
-    private final int evaluationRepetitions = 5;
+    private final int evaluationRepetitions = 1;
 
     private final int parent = 20;
     private final int child = 40;
     private final int untouched = 30;
     private final int mutated = 10;
+    
+    private final int chanceToPullFromUntouched = 90;
+    private final int chanceToPullFromMutated = 95;
+    private final int chanceToPullFromChild= 98;
     
     java.util.Random Random = new java.util.Random();
     
@@ -57,9 +61,54 @@ public class CustomES implements EA
         	evaluate(i);
         }
         
+        int mateA = Random.nextInt(parent);
+        int mateB = Random.nextInt(parent);
+        int mateC = Random.nextInt(parent);
+        
+        if(Random.nextInt(100) > chanceToPullFromUntouched){
+        	mateA += Random.nextInt(untouched);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromUntouched){
+        	mateB += Random.nextInt(untouched);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromUntouched){
+        	mateC += Random.nextInt(untouched);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromMutated){
+        	mateA += Random.nextInt(mutated);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromMutated){
+        	mateB += Random.nextInt(mutated);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromMutated){
+        	mateC += Random.nextInt(mutated);
+        }
+        
+
+        if(Random.nextInt(100) > chanceToPullFromChild){
+        	mateC += Random.nextInt(child);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromChild){
+        	mateA += Random.nextInt(child);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromChild){
+        	mateB += Random.nextInt(child);
+        }
+        
+        if(Random.nextInt(100) > 98){
+        	mateC += Random.nextInt(child);
+        }
+        
 
         for(int i = parent + untouched + mutated; i < parent + untouched + mutated + child; i++){
-        	population[i].customMlp.psoRecombine(population[Random.nextInt(parent)].customMlp, population[Random.nextInt(parent)].customMlp, population[Random.nextInt(parent)].customMlp);
+        	population[i].customMlp.psoRecombine(population[mateA].customMlp, population[mateB].customMlp, population[mateC].customMlp);
             
         	population[i].mutate();
         	evaluate(i);
