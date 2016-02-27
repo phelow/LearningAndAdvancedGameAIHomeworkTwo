@@ -106,11 +106,11 @@ public final class Main
 
       BufferedWriter bufferFileWriter = new BufferedWriter(fileWriter);
 
-      fileWriter.append("Generation: " + gen + " CurrentBest: " + df.format(fitn) + " AllTimeBest: " + df.format(bestScore) + " Seed: " + seed + " Difficulty: " + dif + ";");
+      fileWriter.append("Generation: " + gen + " CurrentBest: " + df.format(fitn) + " All Time Best: " + df.format(bestScore) + " Seed: " + seed + " Difficulty: " + dif + ";");
 
       bufferFileWriter.close();
 
-      System.out.println("Generation: " + gen + " CurrentBest: " + df.format(fitn) + " AllTimeBest: " + df.format(bestScore) + " Seed: " + seed + " Difficulty: " + dif + ";");
+      System.out.println("Generation: " + gen + " CurrentBest: " + df.format(fitn) + " All Time Best: " + df.format(bestScore) + " Seed: " + seed + " Difficulty: " + dif + ";");
 //          int marioStatus = task.getEnvironment().getEvaluationInfo().marioStatus;
 
       if (fitn > bestScore /*&& marioStatus == Environment.MARIO_STATUS_WIN*/)
