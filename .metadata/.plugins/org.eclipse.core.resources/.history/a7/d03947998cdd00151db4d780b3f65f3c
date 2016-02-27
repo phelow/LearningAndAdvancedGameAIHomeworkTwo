@@ -12,7 +12,7 @@ import ch.idsia.evolution.Evolvable;
  * Date: Apr 29, 2009
  * Time: 12:16:49 PM
  */
-public class CustomES implements EA
+public class GeneticES implements EA
 {
 
     private final GeneticAlgorithmAgent[] population;
@@ -32,7 +32,7 @@ public class CustomES implements EA
     
     java.util.Random Random = new java.util.Random();
     
-    public CustomES(Task task, Evolvable initial, int populationSize)
+    public GeneticES(Task task, Evolvable initial, int populationSize)
     {
         this.population = new GeneticAlgorithmAgent[populationSize];
         for (int i = 0; i < population.length; i++)
@@ -61,53 +61,53 @@ public class CustomES implements EA
         	evaluate(i);
         }
         
+        int mateA = Random.nextInt(parent);
+        int mateB = Random.nextInt(parent);
+        int mateC = Random.nextInt(parent);
+        
+        if(Random.nextInt(100) > chanceToPullFromUntouched){
+        	mateA += Random.nextInt(untouched);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromUntouched){
+        	mateB += Random.nextInt(untouched);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromUntouched){
+        	mateC += Random.nextInt(untouched);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromMutated){
+        	mateA += Random.nextInt(mutated);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromMutated){
+        	mateB += Random.nextInt(mutated);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromMutated){
+        	mateC += Random.nextInt(mutated);
+        }
+        
+
+        if(Random.nextInt(100) > chanceToPullFromChild){
+        	mateC += Random.nextInt(child);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromChild){
+        	mateA += Random.nextInt(child);
+        }
+        
+        if(Random.nextInt(100) > chanceToPullFromChild){
+        	mateB += Random.nextInt(child);
+        }
+        
+        if(Random.nextInt(100) > 98){
+        	mateC += Random.nextInt(child);
+        }
         
 
         for(int i = parent + untouched + mutated; i < parent + untouched + mutated + child; i++){
-        	int mateA = Random.nextInt(parent);
-            int mateB = Random.nextInt(parent);
-            int mateC = Random.nextInt(parent);
-            
-            if(Random.nextInt(100) > chanceToPullFromUntouched){
-            	mateA += Random.nextInt(untouched);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromUntouched){
-            	mateB += Random.nextInt(untouched);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromUntouched){
-            	mateC += Random.nextInt(untouched);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromMutated){
-            	mateA += Random.nextInt(mutated);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromMutated){
-            	mateB += Random.nextInt(mutated);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromMutated){
-            	mateC += Random.nextInt(mutated);
-            }
-            
-
-            if(Random.nextInt(100) > chanceToPullFromChild){
-            	mateC += Random.nextInt(child);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromChild){
-            	mateA += Random.nextInt(child);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromChild){
-            	mateB += Random.nextInt(child);
-            }
-            
-            if(Random.nextInt(100) > 98){
-            	mateC += Random.nextInt(child);
-            }
         	population[i].customMlp.psoRecombine(population[mateA].customMlp, population[mateB].customMlp, population[mateC].customMlp);
             
         	population[i].mutate();

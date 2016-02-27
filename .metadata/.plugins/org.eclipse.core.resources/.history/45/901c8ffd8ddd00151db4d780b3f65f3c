@@ -1,9 +1,5 @@
 package ch.idsia.scenarios;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
@@ -22,7 +18,6 @@ import ch.idsia.benchmark.tasks.ProgressTask;
 import ch.idsia.evolution.Evolvable;
 import ch.idsia.evolution.ea.ES;
 import ch.idsia.evolution.ea.CustomES;
-import ch.idsia.evolution.ea.GeneticES;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.utils.Stats;
 import ch.idsia.utils.wox.serial.Easy;
@@ -35,7 +30,7 @@ public final class Main
 {
 	final static int generations = 10000;
 	final static int populationSize = 100;
-	public static void main(String[] args) throws FileNotFoundException, IOException
+	public static void main(String[] args)
 	{
 	    CmdLineOptions options = new CmdLineOptions(args);
 //      Evolvable initial = new LargeSRNAgent();
@@ -60,7 +55,7 @@ public final class Main
   options.setLevelRandSeed(seed);
 //      int seed = (int) (Math.random () * Integer.MAX_VALUE / 100000);
  // int seed = options.getLevelRandSeed();
- GeneticES es = new GeneticES(task, initial, populationSize);
+ CustomES es = new CustomES(task, initial, populationSize);
   System.out.println("Evolving " + initial + " with task " + task);
 //      int difficulty = 0;
 //      System.out.println("seed = " + seed);
@@ -96,20 +91,7 @@ public final class Main
           //task.setStartingSeed(gen);
       es.nextGeneration();
 
-      float fitn = es.getBestFitnesses()[0];// Appending data to text file
-
-      String path = "C:/Users/Olivia/Documents/Learning and AI/test.txt";
-
-      File file = new File(path);
-
-      FileWriter fileWriter = new FileWriter(file,true);
-
-      BufferedWriter bufferFileWriter = new BufferedWriter(fileWriter);
-
-      fileWriter.append("Generation: " + gen + " CurrentBest: " + df.format(fitn) + " ");
-
-      bufferFileWriter.close();
-
+      float fitn = es.getBestFitnesses()[0];
       System.out.print("Generation: " + gen + " current best: " + df.format(fitn) + ";  ");
 //          int marioStatus = task.getEnvironment().getEvaluationInfo().marioStatus;
 

@@ -12,34 +12,32 @@ import ch.idsia.evolution.Evolvable;
  * Date: Apr 29, 2009
  * Time: 12:16:49 PM
  */
-public class CustomES implements EA
+public class GeneticES implements EA
 {
 
     private final GeneticAlgorithmAgent[] population;
+    private GeneticAlgorithmAgent[] repopulation;
     private final float[] fitness;
+    private final float[] childFitness;
     private final int elite;
     private final Task task;
     private final int evaluationRepetitions = 1;
 
-    private final int parent = 20;
-    private final int child = 40;
-    private final int untouched = 30;
-    private final int mutated = 10;
-    
-    private final int chanceToPullFromUntouched = 90;
-    private final int chanceToPullFromMutated = 95;
-    private final int chanceToPullFromChild= 98;
+    private final int parent = 40;
+    private final int child = 60;
     
     java.util.Random Random = new java.util.Random();
     
-    public CustomES(Task task, Evolvable initial, int populationSize)
+    public GeneticES(Task task, Evolvable initial, int populationSize)
     {
+    	this.repopulation = new GeneticAlgorithmAgent[populationSize + child];
         this.population = new GeneticAlgorithmAgent[populationSize];
         for (int i = 0; i < population.length; i++)
         {
             population[i] = (GeneticAlgorithmAgent) initial.getNewInstance();
         }
         this.fitness = new float[populationSize];
+        this.childFitness = new float[populationSize + child];
         this.elite = populationSize / 10;
         this.task = task;
     }
@@ -55,75 +53,22 @@ public class CustomES implements EA
         //Use the top 20% to replace the bottom 50% with children
         //Mutate the 50-60% 
         //Don't touch the 60%-100%
-        for(int i = parent + untouched; i < parent + untouched + mutated; i++){
+        for(int i = parent; i < parent + child; i++){
         	
         	population[i].mutate();
         	evaluate(i);
         }
-        
-        
 
-        for(int i = parent + untouched + mutated; i < parent + untouched + mutated + child; i++){
-        	int mateA = Random.nextInt(parent);
+        
+        
+        
+        for(int i = 0; i < repopulation.length; i++){
+            int mateA = Random.nextInt(parent);
             int mateB = Random.nextInt(parent);
             int mateC = Random.nextInt(parent);
-            
-            if(Random.nextInt(100) > chanceToPullFromUntouched){
-            	mateA += Random.nextInt(untouched);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromUntouched){
-            	mateB += Random.nextInt(untouched);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromUntouched){
-            	mateC += Random.nextInt(untouched);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromMutated){
-            	mateA += Random.nextInt(mutated);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromMutated){
-            	mateB += Random.nextInt(mutated);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromMutated){
-            	mateC += Random.nextInt(mutated);
-            }
-            
-
-            if(Random.nextInt(100) > chanceToPullFromChild){
-            	mateC += Random.nextInt(child);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromChild){
-            	mateA += Random.nextInt(child);
-            }
-            
-            if(Random.nextInt(100) > chanceToPullFromChild){
-            	mateB += Random.nextInt(child);
-            }
-            
-            if(Random.nextInt(100) > 98){
-            	mateC += Random.nextInt(child);
-            }
         	population[i].customMlp.psoRecombine(population[mateA].customMlp, population[mateB].customMlp, population[mateC].customMlp);
-            
-        	population[i].mutate();
         	evaluate(i);
         }
-        
-        /*
-        for (int i = elite; i < population.length; i++)
-        {
-        	GeneticAlgorithmAgent newAgent = (GeneticAlgorithmAgent) population[i - elite].copy();
-            population[i].customMlp.psoRecombine(population[Random.nextInt(elite)].customMlp, population[Random.nextInt(elite)].customMlp, population[Random.nextInt(elite)].customMlp);
-            population[i].mutate();
-            evaluate(i);
-        
-        }
-        */
         
         shuffle();
         sortPopulationByFitness();
@@ -139,6 +84,18 @@ public class CustomES implements EA
 //            System.out.println("which " + which + " fitness " + fitness[which]);
         }
         fitness[which] = fitness[which] / evaluationRepetitions;
+    }
+    
+    private void evaluateChildPool(int which)
+    {
+    	childFitness[which] = 0;
+        for (int i = 0; i < evaluationRepetitions; i++)
+        {
+            repopulation[which].reset();
+            childFitness[which] += task.evaluate((Agent) repopulation[which])[0];
+//            System.out.println("which " + which + " fitness " + fitness[which]);
+        }
+        childFitness[which] = childFitness[which] / evaluationRepetitions;
     }
 
     private void shuffle()
@@ -162,7 +119,31 @@ public class CustomES implements EA
             }
         }
     }
+    
+    private void sortChildPopulationByFitness()
+    {
+        for (int i = 0; i < repopulation.length; i++)
+        {
+            for (int j = i + 1; j < repopulation.length; j++)
+            {
+                if (childFitness[i] < childFitness[j])
+                {
+                    childSwap(i, j);
+                }
+            }
+        }
+    }
 
+    private void childSwap(int i, int j)
+    {
+        float cache = childFitness[i];
+        childFitness[i] = childFitness[j];
+        childFitness[j] = cache;
+        GeneticAlgorithmAgent gcache = repopulation[i];
+        repopulation[i] = repopulation[j];
+        repopulation[j] = gcache;
+    }
+    
     private void swap(int i, int j)
     {
         float cache = fitness[i];

@@ -35,7 +35,7 @@ public final class Main
 {
 	final static int generations = 10000;
 	final static int populationSize = 100;
-	public static void main(String[] args) throws FileNotFoundException, IOException
+	public static void main(String[] args)
 	{
 	    CmdLineOptions options = new CmdLineOptions(args);
 //      Evolvable initial = new LargeSRNAgent();
